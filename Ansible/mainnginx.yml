@@ -1,0 +1,28 @@
+---
+# ============================================================
+# Rôle : nginx
+# Description : Installation et configuration de Nginx
+# ============================================================
+
+- name: Installation de Nginx
+  ansible.builtin.apt:
+    name: nginx
+    state: present
+
+- name: Démarrage et activation de Nginx
+  ansible.builtin.service:
+    name: nginx
+    state: started
+    enabled: yes
+
+- name: Autorisation du port HTTP dans UFW
+  community.general.ufw:
+    rule: allow
+    port: '80'
+    proto: tcp
+
+- name: Autorisation du port HTTPS dans UFW
+  community.general.ufw:
+    rule: allow
+    port: '443'
+    proto: tcp
