@@ -1,0 +1,70 @@
+# ============================================================
+# Stack Zabbix — Supervision de l'infrastructure CYNA
+# ============================================================
+
+services:
+  zabbix-db:
+    image: mysql:8.0
+    container_name: zabbix-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: zabbix
+      MYSQL_USER: zabbix
+      MYSQL_PASSWORD: ${MYSQL_ZABBIX_PASSWORD}
+    volumes:
+      - zabbix-db-data:/var/lib/mysql
+    networks:
+      - cyna-net
+    command:
+      - mysqld
+      - --character-set-server=utf8
+      - --collation-server=utf8_bin
+
+  zabbix-server:
+    image: zabbix/zabbix-server-mysql:6.4-alpine-latest
+    container_name: zabbix-server
+    restart: unless-stopped
+    depends_on:
+      - zabbix-db
+    environment:
+      DB_SERVER_HOST: zabbix-db
+      MYSQL_DATABASE: zabbix
+      MYSQL_USER: zabbix
+      MYSQL_PASSWORD: ${MYSQL_ZABBIX_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    ports:
+      - "10051:10051"
+    volumes:
+      - zabbix-server-data:/var/lib/zabbix
+    networks:
+      - cyna-net
+
+  zabbix-web:
+    image: zabbix/zabbix-web-nginx-mysql:6.4-alpine-latest
+    container_name: zabbix-web
+    restart: unless-stopped
+    depends_on:
+      - zabbix-server
+      - zabbix-db
+    environment:
+      ZBX_SERVER_HOST: zabbix-server
+      DB_SERVER_HOST: zabbix-db
+      MYSQL_DATABASE: zabbix
+      MYSQL_USER: zabbix
+      MYSQL_PASSWORD: ${MYSQL_ZABBIX_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      PHP_TZ: Europe/Paris
+    ports:
+      - "8080:8080"
+    networks:
+      - cyna-net
+
+volumes:
+  zabbix-db-data:
+  zabbix-server-data:
+
+networks:
+  cyna-net:
+    driver: bridge
+    name: cyna-net
