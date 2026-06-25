@@ -1,0 +1,65 @@
+---
+# ============================================================
+# Rôle : common
+# Description : Durcissement et configuration de base
+# ============================================================
+
+- name: Mise à jour du cache APT
+  ansible.builtin.apt:
+    update_cache: yes
+    cache_valid_time: 3600
+
+- name: Upgrade complet du système
+  ansible.builtin.apt:
+    upgrade: dist
+    autoremove: yes
+
+- name: Installation des outils essentiels
+  ansible.builtin.apt:
+    name:
+      - vim
+      - htop
+      - curl
+      - wget
+      - git
+      - ufw
+      - fail2ban
+      - unattended-upgrades
+      - ntp
+    state: present
+
+- name: Définition du fuseau horaire
+  community.general.timezone:
+    name: "{{ timezone }}"
+
+- name: Désactivation du login SSH root
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?PermitRootLogin'
+    line: 'PermitRootLogin no'
+  notify: restart ssh
+
+- name: Désactivation de l'authentification par mot de passe
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?PasswordAuthentication'
+    line: 'PasswordAuthentication no'
+  notify: restart ssh
+
+- name: Activation d'UFW avec politique deny par défaut
+  community.general.ufw:
+    state: enabled
+    policy: deny
+    direction: incoming
+
+- name: Autorisation du port SSH
+  community.general.ufw:
+    rule: allow
+    port: '{{ ssh_port }}'
+    proto: tcp
+
+- name: Démarrage et activation de Fail2Ban
+  ansible.builtin.service:
+    name: fail2ban
+    state: started
+    enabled: yes
