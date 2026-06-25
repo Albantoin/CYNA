@@ -1,55 +1,60 @@
-# CYNA Project - Secure Hybrid IT Infrastructure
+# Projet CYNA - Infrastructure Informatique Hybride et Sécurisée
 
-## 📌 Project Overview
-**CYNA** is a leading cybersecurity company specializing in advanced protection solutions (SOC, EDR, XDR) and multi-tenant SaaS platform hosting. As part of its corporate expansion—establishing a new headquarters in Geneva and an operational branch in Paris—this project delivers a highly secure, resilient, and **"Security by Design"** infrastructure blueprint.
+## 📌 Présentation du Projet
+[cite_start]**CYNA** est une entreprise spécialisée dans les solutions de cybersécurité avancées (SOC, EDR, XDR) et l'édition d'une plateforme SaaS[cite: 46]. [cite_start]Dans le cadre de son expansion commerciale — avec l'établissement d'un nouveau siège social à Genève et d'une filiale opérationnelle à Paris [cite: 47] [cite_start]— ce projet propose un modèle d'infrastructure hautement sécurisé, résilient et conçu selon les principes du **"Security by Design"**[cite: 48].
 
-The core challenge of this Proof of Concept (PoC) was to simulate a robust, multi-site enterprise network while constrained by a strict hardware limitation of **14 GB of RAM**.
-
----
-
-## 🏗️ Architecture Design
-
-To achieve enterprise-grade separation and high availability within a limited memory footprint, the project implements an optimized hybrid cloud topology:
-
-### 1. On-Premises Optimization (Local Infrastructure)
-* **Hypervisor:** A single **Microsoft Hyper-V** host manages the virtual environment.
-* **Multi-Site Simulation:** Geneva and Paris offices are logically simulated on the same host using strict **VLAN segmentation**.
-* **Perimeter Security:** Two virtual **pfSense** firewalls enforce inter-VLAN routing and secure site-to-site communication via an encrypted **IPsec VPN tunnel**.
-* **Identity Management:** Dual Active Directory Domain Controllers (Geneva/Paris) are deployed using **Windows Server Core** (CLI only) to drastically reduce memory overhead.
-* **Containerization:** Resource-heavy internal applications are consolidated onto a single Linux **Docker Host** to save RAM.
-
-### 2. Public Cloud Extension (Microsoft Azure)
-To offload local compute and storage, critical services are extended into **Microsoft Azure** through a Site-to-Site IPsec VPN:
-* **Disaster Recovery Plan (DRP):** Automated off-site backups managed via **Veeam**.
-* **Update Management:** Centralized patch delivery using an Azure-hosted **WSUS** server.
-* **SaaS Environment:** Hosting and simulation of CYNA's production SaaS platform.
+[cite_start]Le défi majeur de ce Proof of Concept (PoC) a été de simuler un réseau d'entreprise multi-sites complet tout en respectant une contrainte matérielle stricte de **14 Go de RAM**[cite: 49].
 
 ---
 
-## 🔒 Security & SOC Implementation
+## 🏗️ Conception de l'Architecture
 
-Aligned with CYNA's expertise, security is embedded into every layer of the infrastructure:
+Pour garantir le cloisonnement des environnements et une haute disponibilité malgré les ressources mémoire limitées, une topologie cloud hybride optimisée a été déployée :
 
-* **Zero Trust Architecture (ZTNA):** Implementation of a default-deny posture on pfSense firewalls; all inter-VLAN traffic is blocked except explicitly authorized flows (e.g., Active Directory replication).
-* **Active Surveillance (SIEM/EDR):** **Wazuh** is containerized and optimized with a tuned Java Virtual Machine (JVM capped at 1 GB RAM) to collect security logs centrally from endpoints.
-* **Endpoint Hardening:** Centralized enforcement of strict password policies and peripheral (USB) restrictions via Active Directory **Group Policy Objects (GPOs)**.
+### 1. Optimisation On-Premises (Infrastructure Locale)
+* [cite_start]**Hyperviseur :** Un hôte unique **Microsoft Hyper-V** centralise la virtualisation[cite: 50].
+* [cite_start]**Simulation Multi-Sites :** Les sites de Genève et Paris sont simulés logiquement sur le même hyperviseur grâce à une **segmentation par VLANs** stricte[cite: 50].
+* [cite_start]**Sécurité Périmétrique :** Deux pare-feux virtuels **pfSense** gèrent le routage inter-VLAN et sécurisent l'interconnexion via un tunnel **VPN IPsec** chiffré[cite: 51].
+* [cite_start]**Gestion de l'Identité :** Les contrôleurs de domaine Active Directory (Genève/Paris) sont installés sous **Windows Server Core** (sans interface graphique) afin de réduire drastiquement l'empreinte mémoire[cite: 52].
+* [cite_start]**Conteneurisation :** Les services applicatifs internes lourds sont consolidés sur un hôte **Docker** unique pour économiser la RAM[cite: 53].
+
+### 2. Extension Cloud Public (Microsoft Azure)
+[cite_start]Pour délester le stockage et le calcul local, l'infrastructure s'étend vers **Microsoft Azure** à travers un tunnel VPN IPsec de site à site[cite: 58]:
+* [cite_start]**Plan de Reprise d'Activité (PRA) :** Sauvegardes externalisées et automatisées gérées via **Veeam**[cite: 59].
+* [cite_start]**Gestion des Mises à Jour :** Distribution centralisée des correctifs système via un serveur **WSUS** hébergé sur Azure[cite: 59].
+* [cite_start]**Environnement SaaS :** Hébergement et simulation de la plateforme SaaS de CYNA vendue à ses clients[cite: 59].
 
 ---
 
-## ⚙️ DevOps & Automation (IaC)
+## 🔒 Implémentation de la Sécurité & du SOC
 
-The environment is designed to be fully reproducible, standardized, and secure from the ground up, minimizing human configuration errors:
+[cite_start]En accord avec l'expertise de CYNA, la sécurité est intégrée à chaque couche de l'infrastructure[cite: 84]:
 
-| Scope | Tool | Purpose |
+* [cite_start]**Architecture Zero Trust (ZTNA) :** Application d'une politique de blocage par défaut sur les pare-feux pfSense ; tout trafic inter-VLAN est interdit, sauf les flux explicitement autorisés (ex: réplication Active Directory)[cite: 54].
+* [cite_start]**Surveillance Active (SIEM/EDR) :** La solution **Wazuh** est conteneurisée et optimisée (JVM limitée à 1 Go de RAM) pour centraliser la collecte des journaux de sécurité des machines endpoints[cite: 55, 90].
+* [cite_start]**Durcissement des Endpoints (Hardening) :** Déploiement de politiques de mots de passe complexes et restrictions des périphériques USB via les **GPOs** de l'Active Directory[cite: 56].
+
+---
+
+## ⚙️ DevOps & Automatisation (IaC)
+
+[cite_start]L'environnement est entièrement reproductible, standardisé et sécurisé dès sa conception, minimisant ainsi les erreurs de configuration humaines[cite: 60, 61]:
+
+| Périmètre | Outil | Objectif |
 | :--- | :--- | :--- |
-| **Cloud Infrastructure** | `Terraform` | Automated provisioning of Azure Virtual Networks and VMs. |
-| **Configuration Management** | `Ansible` | Local system and network automated configurations. |
-| **Service Deployment** | `Docker Compose` | Streamlined deployment of local containerized microservices. |
+| **Infrastructure Cloud** | `Terraform` | [cite_start]Provisionnement automatisé du réseau virtuel et des machines sur Azure[cite: 60]. |
+| **Gestion des Configurations** | `Ansible` | [cite_start]Automatisation des configurations réseaux et systèmes locaux[cite: 60]. |
+| **Déploiement de Services** | `Docker Compose` | [cite_start]Déploiement et orchestration des microservices et conteneurs locaux[cite: 60]. |
 
 ---
 
-## 🛠️ Tech Stack
+## 🛠️ Stack Technique
 
-* **Virtualization:** Microsoft Hyper-V
-* **Cloud:** Microsoft Azure
-* **Containers:** Docker & Docker Compose
+* [cite_start]**Virtualisation :** Microsoft Hyper-V [cite: 50]
+* [cite_start]**Cloud :** Microsoft Azure [cite: 58]
+* [cite_start]**Conteneurs :** Docker & Docker Compose [cite: 53, 60]
+* [cite_start]**Systèmes d'exploitation :** Windows Server Core, Linux Ubuntu [cite: 52]
+* [cite_start]**Réseau & Sécurité :** pfSense, VPN IPsec [cite: 51]
+* [cite_start]**Supervision & SIEM :** Wazuh (SIEM/EDR), Zabbix [cite: 53, 55]
+* [cite_start]**Sauvegarde & Conformité :** Veeam, WSUS [cite: 59]
+* [cite_start]**Automatisation :** Terraform, Ansible [cite: 60]
