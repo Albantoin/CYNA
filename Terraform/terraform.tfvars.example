@@ -1,0 +1,16 @@
+# ============================================================
+# Exemple de fichier terraform.tfvars
+#  NE PAS VERSIONNER CE FICHIER AVEC LES VRAIES VALEURS (exemple)
+# ============================================================
+
+subscription_id = "00000000-0000-0000-0000-000000000000"
+client_id       = "00000000-0000-0000-0000-000000000000"
+client_secret   = "SecretIci"
+tenant_id       = "00000000-0000-0000-0000-000000000000"
+
+location            = "West Europe"
+resource_group_name = "rg-cyna-prod"
+environment         = "prod"
+
+admin_username = "cynaadmin"
+admin_password = "Mdpici"
