@@ -1,0 +1,22 @@
+---
+# ============================================================
+# Playbook principal : Déploiement complet de l'infrastructure
+# ============================================================
+
+- name: Configuration de base sur toutes les machines
+  hosts: all
+  become: yes
+  roles:
+    - common
+
+- name: Installation de Docker sur le Docker Host
+  hosts: docker_hosts
+  become: yes
+  roles:
+    - docker
+
+- name: Configuration du serveur web Nginx sur la VM SaaS
+  hosts: webservers
+  become: yes
+  roles:
+    - nginx
