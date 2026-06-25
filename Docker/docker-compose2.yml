@@ -1,0 +1,22 @@
+# ============================================================
+# HAProxy — Reverse-proxy pour les services CYNA
+# ============================================================
+
+services:
+  haproxy:
+    image: haproxy:2.9-alpine
+    container_name: haproxy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8404:8404"
+    volumes:
+      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+    networks:
+      - cyna-net
+
+networks:
+  cyna-net:
+    external: true
+    name: cyna-net
