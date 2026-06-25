@@ -1,0 +1,39 @@
+#cloud-config
+# Configuration au premier démarrage de la VM SaaS
+
+package_update: true
+package_upgrade: true
+
+packages:
+  - nginx
+  - curl
+  - ufw
+
+write_files:
+  - path: /var/www/html/index.html
+    content: |
+      <!DOCTYPE html>
+      <html lang="fr">
+      <head>
+        <meta charset="UTF-8">
+        <title>CYNA SaaS Platform</title>
+        <style>
+          body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
+          h1 { color: #2c3e50; }
+          .container { max-width: 800px; margin: auto; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <h1>Bienvenue sur la plateforme SaaS CYNA</h1>
+          <p>Serveur déployé automatiquement via Terraform et cloud-init.</p>
+        </div>
+      </body>
+      </html>
+
+runcmd:
+  - systemctl enable nginx
+  - systemctl start nginx
+  - ufw allow 'Nginx Full'
+  - ufw allow OpenSSH
+  - ufw --force enable
