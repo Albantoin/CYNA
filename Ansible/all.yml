@@ -1,0 +1,13 @@
+# Variables communes à tous les hôtes
+devops_user: antoine
+timezone: Europe/Paris
+ssh_port: 22
+
+# Variables pour le durcissement
+fail2ban_enabled: true
+ufw_enabled: true
+
+# Variables pour Docker
+docker_version: latest
+docker_users:
+  - user
