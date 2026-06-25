@@ -1,0 +1,20 @@
+all:
+  children:
+    docker_hosts:
+      hosts:
+        dockergva:
+          ansible_host: 10.0.20.10
+          ansible_user: antoine
+    webservers:
+      hosts:
+        vm-saas-cyna:
+          ansible_host: 20.123.45.67
+          ansible_user: cynaadmin
+    monitoring:
+      hosts:
+        dockergva:
+          wazuh_role: manager
+    agents:
+      hosts:
+        vm-saas-cyna:
+        dockergva:
