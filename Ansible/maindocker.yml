@@ -1,0 +1,48 @@
+---
+# ============================================================
+# Rôle : docker
+# Description : Installation de Docker et Docker Compose
+# ============================================================
+
+- name: Installation des dépendances Docker
+  ansible.builtin.apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg
+      - lsb-release
+    state: present
+
+- name: Ajout de la clé GPG officielle de Docker
+  ansible.builtin.apt_key:
+    url: https://download.docker.com/linux/debian/gpg
+    state: present
+
+- name: Ajout du dépôt Docker
+  ansible.builtin.apt_repository:
+    repo: "deb https://download.docker.com/linux/debian {{ ansible_distribution_release }} stable"
+    state: present
+    update_cache: yes
+
+- name: Installation de Docker et Docker Compose
+  ansible.builtin.apt:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-compose-plugin
+    state: present
+
+- name: Ajout des utilisateurs au groupe docker
+  ansible.builtin.user:
+    name: "{{ item }}"
+    groups: docker
+    append: yes
+  loop: "{{ docker_users }}"
+
+- name: Activation du service Docker au démarrage
+  ansible.builtin.service:
+    name: docker
+    state: started
+    enabled: yes
